@@ -1,3 +1,46 @@
+$(window).on("load", function () {
+  console.log("All assets are loaded");
+});
+
+const validation = (data) => {
+  const errors = [];
+
+  if (data.firstname.length === 0) {
+    errors.push({ message: "กรุณากรอกชื่อจริง!", status: "error" });
+  }
+
+  if (data.lastname.length === 0) {
+    errors.push({ message: "กรุณากรอกนามสกุล!", status: "error" });
+  }
+
+  if (data.email.length === 0) {
+    errors.push({ message: "กรุณากรอกอีเมล!", status: "error" });
+  }
+
+  if (data.birthday.length === 0) {
+    errors.push({ message: "กรุณากรอกวันเกิด!", status: "error" });
+  }
+
+  if (data.password.length === 0) {
+    errors.push({ message: "กรุณากรอกรหัสผ่าน!", status: "error" });
+  }
+
+  if (data.password.length <= 6) {
+    errors.push({
+      message: "ต้องการรหัสผ่าน 6 ตัวอักษรขึ้นไป!",
+      status: "error",
+    });
+  }
+
+  if (data.password != data.confirmpassword) {
+    errors.push({
+      message: "รหัสผ่านไม่ตรงกัน!",
+      status: "error",
+    });
+  }
+  return errors;
+};
+
 $("#formsubmit").submit(function (e) {
   e.preventDefault(); // avoid to execute the actual submit of the form.
 
@@ -8,50 +51,27 @@ $("#formsubmit").submit(function (e) {
   const password = $("#password").val();
   const confirmpassword = $("#confirmpassword").val();
 
-  if (firstname.length === 0) {
-    sweetAlert("", "กรุณากรอกชื่อจริง!", "error");
-    return;
-  }
-
-  if (lastname.length === 0) {
-    sweetAlert("", "กรุณากรอกนามสกุล!", "error");
-    return;
-  }
-
-
-  if (email.length === 0) {
-    sweetAlert("", "กรุณากรอกอีเมล!", "error");
-    return;
-  }
-
-
-  if (birthday.length === 0) {
-    sweetAlert("", "กรุณากรอกวันเกิด!", "error");
-    return;
-  }
-
-  if (password.length === 0) {
-    sweetAlert("", "กรุณากรอกรหัสผ่าน!", "error");
-    return;
-  }
-
-  if (password.length <= 6) {
-    sweetAlert("", "ต้องการรหัสผ่าน 6 ตัวอักษรขึ้นไป!", "error");
-    return;
-  }
-
-  if (password != confirmpassword) {
-    sweetAlert("", "รหัสผ่านไม่ตรงกัน!", "error");
-    return;
-  }
-
   const data = {
     firstname: firstname,
     lastname: lastname,
     birthday: birthday,
     email: email,
     password: password,
+    confirmpassword: confirmpassword,
   };
+
+  const errors = validation(data);
+
+  const message = $("#message");
+
+  if (errors.length > 0) {
+    message.html(` <div class="alert alert-danger " role="alert" id="message">
+                    <ul>
+                 ${errors.map((error) => `<li>${error.message}</li>`).join("")}
+                    </ul>
+                </div>`);
+    return;
+  }
 
   $.ajax({
     type: "post",
@@ -59,10 +79,10 @@ $("#formsubmit").submit(function (e) {
     data: data,
     success: function (data) {
       const object = JSON.parse(data);
-      if (object.status === 401) {
-        swal(object.message, "", "error");
-        return;
-      }
+      // if (object.status === 401) {
+      //   swal(object.message, "", "error");
+      //   return;
+      // }
       swal("ลงทะเบียนสำเร็จแล้ว!", "", "success");
     },
     error: function (err) {
