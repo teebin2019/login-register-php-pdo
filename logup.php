@@ -12,9 +12,13 @@
 
 <body class="d-flex flex-column justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="container">
+
         <div class="card">
             <div class="card-body">
                 <h2 class="card-title text-center"><b>ลงทะเบียน</b></h2>
+                <div id="message">
+
+                </div>
                 <form id="formsubmit">
                     <div class="mb-3">
                         <label for="firstname" class="form-label">ชื่อจริง</label>
